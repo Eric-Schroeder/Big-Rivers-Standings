@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+ 
+<html>
+<head>
+<title>Big Rivers Standings</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="css/bigrivers.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+<script>
+
+$(function() {
+
+  $.getJSON("json/data.json", function(data) {
+    var teams = [];
+    $.each(data, function(i, f) {
+        var listItem = "<div><img class=\"logo\" src=\"img/" + f.team + ".png\"></img>" +
+                        "<li class=\"table-row\">" + 
+                        "<div class=\"col col-1 col-1-small\" data-label=\"" + (i + 1) + ". \">" + f.team + "</div>" +
+                        "<div class=\"col col-1 col-1-large\">" + (i + 1) + ". "  + f.team + "</div>" +
+                        "<div class=\"col col-2\" data-label=\"Conference Record\">" + f.conferenceRecord + "</div>" +
+                        "<div class=\"col col-3\" data-label=\"Bonus Pts\">" + f.bonusPoints + "</div>" +
+                        "<div class=\"col col-4\" data-label=\"Total Pts\">" + f.totalPoints + "</div>" +
+                        "<div class=\"col col-5\" data-label=\"Game Pts Differential\">" + f.confPointDiff + "</div>" +
+                        "</li></div>"
+        $(listItem).appendTo("#team-data");
+    });
+
+  });
+
+});
+
+</script>
+</head>
+<body>
+    <div class="container">
+      <h2>Big Rivers Conference Standings*</h2>
+      <ul id="team-data" class="table">
+        <li class="table-header">
+          <div class="col col-1-header">TEAM</div>
+          <div class="col col-2-header">CONFERENCE RECORD</div>
+          <div class="col col-3-header">BONUS PTS</div>
+          <div class="col col-4-header">TOTAL PTS</div>
+          <div class="col col-5-header">GAME PTS DIFFERENTIAL</div>
+        </li>
+      </ul>
+      <div class="standings-info">
+        <h4>* This is an UNOFFICIAL record of the conference standings. I do not repesent the Big Rivers Conference. This should be used for educational purposes only.</h4>
+      </div>
+      <div class="standings-info">
+        <h4>Table points are determined by the standard rugby union point system:</h4>
+        <ul>
+          <li class="scoring-info">4 points for winning a match</li>
+          <li class="scoring-info">2 points for drawing a match</li>
+          <li class="scoring-info">0 points for losing a match</li>
+          <li class="scoring-info">1 losing bonus point for losing by 7 points or fewer</li>
+          <li class="scoring-info">1 try bonus point for scoring 4 tries or more</li>
+        </ul>
+        <h4>In the event of two or more teams being equal on competition points for any position either during or at the end of the season, such position will be decided upon using the following steps until the tie is broken:</h4>
+        <ol>
+          <li class="scoring-info">(a) Most wins from all matches;</li>
+          <li class="scoring-info">(b) Highest aggregate points difference from all matches;</li>
+          <li class="scoring-info">(c) Most tries from all matches;</li>
+          <li class="scoring-info">(d) The highest aggregate difference of total tries for versus tries scored against from all matches;</li>
+          <li class="scoring-info">(e) Superior head to head record;</li>
+          <li class="scoring-info">(f) Coin toss.</li>
+        </ol>
+      </div>
+    </div>
+    <p></p>
+
+</body>
+</html>
