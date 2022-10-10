@@ -9,12 +9,14 @@
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
 <script>
 
+$.ajaxSetup({ cache:false });
+
 $(function() {
 
   $.getJSON("json/data.json", function(data) {
     var teams = [];
     $.each(data, function(i, f) {
-        var listItem = "<div><img class=\"logo\" src=\"img/" + f.team + ".png\"></img>" +
+      var listItem = "<div><img class=\"logo\" src=\"img/" + f.team + ".png\"></img>" +
                         "<li class=\"table-row\">" + 
                         "<div class=\"col col-1 col-1-small\" data-label=\"" + (i + 1) + ". \">" + f.team + "</div>" +
                         "<div class=\"col col-1 col-1-large\">" + (i + 1) + ". "  + f.team + "</div>" +
@@ -23,9 +25,61 @@ $(function() {
                         "<div class=\"col col-4\" data-label=\"Total Pts\">" + f.totalPoints + "</div>" +
                         "<div class=\"col col-5\" data-label=\"Game Pts Differential\">" + f.confPointDiff + "</div>" +
                         "</li></div>"
-        $(listItem).appendTo("#team-data");
+      $(listItem).appendTo("#team-data");  
+      
+      var listItemFull = "<div><img class=\"logo\" src=\"img/" + f.team + ".png\"></img>" +
+                        "<li class=\"table-row\">" + 
+                        "<div class=\"col col-1-full-data col-1-small\" data-label=\"" + (i + 1) + ". \">" + f.team + "</div>" +
+                        "<div class=\"col col-1-full-data col-1-large\">" + (i + 1) + ". "  + f.team + "</div>" +
+                        "<div class=\"col col-2-full-data\" data-label=\"Overall Record\">" + f.overallRecord + "</div>" +
+                        "<div class=\"col col-3-full-data\" data-label=\"Conference Record\">" + f.conferenceRecord + "</div>" +
+                        "<div class=\"col col-4-full-data\" data-label=\"Bonus Pts\">" + f.bonusPoints + "</div>" +
+                        "<div class=\"col col-5-full-data\" data-label=\"Total Pts\">" + f.totalPoints + "</div>" +
+                        "<div class=\"col col-6-full-data\" data-label=\"Points For\">" + f.overallPointsFor + "</div>" +
+                        "<div class=\"col col-7-full-data\" data-label=\"Points Against\">" + f.overallPointsAgainst + "</div>" +
+                        "<div class=\"col col-8-full-data\" data-label=\"Points Differential\">" + f.overallPointDiff + "</div>" +
+                        "<div class=\"col col-9-full-data\" data-label=\"Conference PF\">" + f.confPointsFor + "</div>" +
+                        "<div class=\"col col-10-full-data\" data-label=\"Conference PA\">" + f.confPointsAgainst + "</div>" +
+                        "<div class=\"col col-11-full-data\" data-label=\"Conference PD\">" + f.confPointDiff + "</div>" +
+                        "<div class=\"col col-12-full-data\" data-label=\"NCR Rank\">" + f.ncrRank + "</div>" +
+                        "<div class=\"col col-13-full-data\" data-label=\"Goff Rank\">" + f.goffRank + "</div>" +
+                        "</li></div>"
+        $(listItemFull).appendTo("#team-data-full");
+        
     });
 
+  });
+
+  $("#data-button").click(function() {
+    if ($("#team-data-full").css("display") == "none") {
+      $("#team-data-full").css("display", "block");
+      $("#team-data").css("display", "none");
+      $("#data-button").html("HIDE FULL STATS");
+      if ($(window).width() < 768) {
+        $(".logo").css("padding-top", "200px");
+      } else {
+        $(".logo").css("padding-top", "7px");
+      }
+    } else {
+      $("#team-data-full").css("display", "none");
+      $("#team-data").css("display", "block");
+      $("#data-button").html("SHOW FULL STATS");
+      if ($(window).width() < 768) {
+        $(".logo").css("padding-top", "30px");
+      } else {
+        $(".logo").css("padding-top", "7px");
+      }
+    }    
+  });
+
+  $(window).on("resize", function() {
+    if (($(window).width() < 768) && ($("#team-data-full").css("display") == "block")) {
+        $(".logo").css("padding-top", "200px");
+    } else if (($(window).width() < 768) && ($("#team-data-full").css("display") == "none")) {
+        $(".logo").css("padding-top", "30px");
+    } else {
+      $(".logo").css("padding-top", "7px");
+    } 
   });
 
 });
@@ -33,41 +87,57 @@ $(function() {
 </script>
 </head>
 <body>
-    <div class="container">
-      <h2>Big Rivers Conference Standings*</h2>
-      <ul id="team-data" class="table">
-        <li class="table-header">
-          <div class="col col-1-header">TEAM</div>
-          <div class="col col-2-header">CONFERENCE RECORD</div>
-          <div class="col col-3-header">BONUS PTS</div>
-          <div class="col col-4-header">TOTAL PTS</div>
-          <div class="col col-5-header">GAME PTS DIFFERENTIAL</div>
-        </li>
-      </ul>
-      <div class="standings-info">
-        <h4>* This is an UNOFFICIAL record of the conference standings. I do not repesent the Big Rivers Conference. This should be used for educational purposes only.</h4>
-      </div>
-      <div class="standings-info">
-        <h4>Table points are determined by the standard rugby union point system:</h4>
-        <ul>
-          <li class="scoring-info">4 points for winning a match</li>
-          <li class="scoring-info">2 points for drawing a match</li>
-          <li class="scoring-info">0 points for losing a match</li>
-          <li class="scoring-info">1 losing bonus point for losing by 7 points or fewer</li>
-          <li class="scoring-info">1 try bonus point for scoring 4 tries or more</li>
-        </ul>
-        <h4>In the event of two or more teams being equal on competition points for any position either during or at the end of the season, such position will be decided upon using the following steps until the tie is broken:</h4>
-        <ol>
-          <li class="scoring-info">(a) Most wins from all matches;</li>
-          <li class="scoring-info">(b) Highest aggregate points difference from all matches;</li>
-          <li class="scoring-info">(c) Most tries from all matches;</li>
-          <li class="scoring-info">(d) The highest aggregate difference of total tries for versus tries scored against from all matches;</li>
-          <li class="scoring-info">(e) Superior head to head record;</li>
-          <li class="scoring-info">(f) Coin toss.</li>
-        </ol>
-      </div>
+  <div id="container" class="container">
+    <h2>Big Rivers Conference Standings*</h2>
+    <button id="data-button">SHOW FULL STATS</button>
+    <ul id="team-data" class="table">
+      <li class="table-header">
+        <div id="col-1-header" class="col col-1">TEAM</div>
+        <div class="col col-2">CONFERENCE RECORD</div>
+        <div class="col col-3">BONUS PTS</div>
+        <div class="col col-4">TOTAL PTS</div>
+        <div class="col col-5">GAME PTS DIFFERENTIAL</div>
+      </li>
+    </ul>
+    <ul id="team-data-full" class="table">
+      <li id="table-header-full" class="table-header">
+        <div class="col col-1-full-data">TEAM</div>
+        <div class="col col-2-full-data">RECORD</div>
+        <div class="col col-3-full-data">CONF RECORD</div>
+        <div class="col col-4-full-data">BONUS PTS</div>
+        <div class="col col-5-full-data">TOTAL PTS</div>
+        <div class="col col-6-full-data">POINTS FOR</div>
+        <div class="col col-7-full-data">POINTS AGAINST</div>
+        <div class="col col-8-full-data">POINT DIFF</div>
+        <div class="col col-9-full-data">CONF PF</div>
+        <div class="col col-10-full-data">CONF PA</div>
+        <div class="col col-11-full-data">CONF PD</div>
+        <div class="col col-12-full-data">NCR RANK</div>
+        <div class="col col-13-full-data">GOFF RANK</div>
+      </li>
+    </ul>
+    <div class="standings-info">
+      <h4>* This is an UNOFFICIAL record of the conference standings. I do not repesent the Big Rivers Conference. This should be used for educational purposes only.</h4>
     </div>
-    <p></p>
-
+    <div class="standings-info">
+      <h4>Table points are determined by the standard rugby union point system:</h4>
+      <ul>
+        <li class="scoring-info">4 points for winning a match</li>
+        <li class="scoring-info">2 points for drawing a match</li>
+        <li class="scoring-info">0 points for losing a match</li>
+        <li class="scoring-info">1 losing bonus point for losing by 7 points or fewer</li>
+        <li class="scoring-info">1 try bonus point for scoring 4 tries or more</li>
+      </ul>
+      <h4>In the event of two or more teams being equal on competition points for any position either during or at the end of the season, such position will be decided upon using the following steps until the tie is broken:</h4>
+      <ol>
+        <li class="scoring-info">(a) Most wins from all matches;</li>
+        <li class="scoring-info">(b) Highest aggregate points difference from all matches;</li>
+        <li class="scoring-info">(c) Most tries from all matches;</li>
+        <li class="scoring-info">(d) The highest aggregate difference of total tries for versus tries scored against from all matches;</li>
+        <li class="scoring-info">(e) Superior head to head record;</li>
+        <li class="scoring-info">(f) Coin toss.</li>
+      </ol>
+    </div>
+  </div>
 </body>
 </html>
